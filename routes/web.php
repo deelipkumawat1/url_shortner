@@ -9,8 +9,8 @@ Route::get('/', function () {
 
 
 Route::prefix('login')->name('login.')->group(function() {
-    Route::get('/', [AuthController::class, 'index'])->name('login.index');
-    Route::post('/store', [AuthController::class, 'store'])->name('login.store');
+    Route::get('/', [AuthController::class, 'index'])->name('index');
+    Route::post('/store', [AuthController::class, 'store'])->name('store');
 });
 
 require __DIR__ . '/admin.php';

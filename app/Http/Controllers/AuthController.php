@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -53,6 +54,15 @@ class AuthController extends Controller
             }
 
             if(strtolower($user->role) === 'admin') {
+
+                if(!$user->status) {
+                    return response()->json([
+                        'status' => false,
+                        'is_active' => true,
+                        'message' => 'You are blocked please contact with super admin',
+                        'redirect' => route('login.index'),
+                    ]);
+                }
                 Auth::guard('admin')->login($user);
 
                 return response()->json([
@@ -62,10 +72,44 @@ class AuthController extends Controller
                 ]);
             }
             elseif(strtolower($user->role) === 'member') {
+                if(!$user->status) {
+                    return response()->json([
+                        'status' => false,
+                        'is_active' => true,
+                        'message' => 'You are blocked please contact with admin',
+                        'redirect' => route('login.index'),
+                    ]);
+                }
+                Auth::guard('member')->login($user);
 
+                return response()->json([
+                    'status' => true,
+                    'message' => 'welcome to the dashboard',
+                    'redirect' => route('member.dashboard'),
+                ]);
             }
-        } catch (\Throwable $th) {
-            //throw $th;
+            elseif(strtolower($user->role === 's_admin')) {
+                Auth::guard('s_admin')->login($user);
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'welcome to the dashboard',
+                    'redirect' => route('s_admin.dashboard'),
+                ]);
+            }
+            else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Invalid user role. Please contact administrator.',
+                    'redirect' => route('login.index')
+                ]);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'error' => $e->getMessage(),
+                'message' => 'something went wrong',
+            ], 500);
         }
     }
 }

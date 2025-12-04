@@ -78,7 +78,7 @@
 <script src="{{ asset('assets/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ asset('assets/dist/js/adminlte.min.js') }}"></script>
-{{-- <script>
+<script>
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -175,7 +175,7 @@
                 .html('<span class="inline-block animate-spin mr-2">⌛</span> Logging in...');
 
             $.ajax({
-                url: '{{ route("admin.login_store") }}',
+                url: '{{ route("login.store") }}',
                 type: 'POST',
                 data: $form.serializeArray(),
                 dataType: 'json',
@@ -201,7 +201,7 @@
 
                         // Redirect to dashboard after success message
                         setTimeout(function() {
-                            window.location.href = response.redirect || "{{ route('dashboard.index') }}";
+                            window.location.href = response.redirect;
                         }, 2000);
                     } else {
                         // Handle validation errors
@@ -221,6 +221,29 @@
                                 icon: 'warning',
                                 title: response.message || 'Invalid credentials'
                             });
+
+                            setTimeout(function() {
+                                window.location.href = response.redirect;
+                            }, 2000);
+                        }
+
+                        // User inactive.
+                        if(response.is_active === true) {
+                            let Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+
+                            Toast.fire({
+                                icon: 'warning',
+                                title: response.message || 'Invalid credentials'
+                            });
+
+                            setTimeout(function() {
+                                window.location.href = response.redirect;
+                            }, 2000);
                         }
 
                         // Handle credential errors
@@ -323,7 +346,7 @@
     });
 
 
-</script> --}}
+</script>
 </body>
 </html>
 
