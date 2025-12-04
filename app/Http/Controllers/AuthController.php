@@ -55,7 +55,7 @@ class AuthController extends Controller
 
             if(strtolower($user->role) === 'admin') {
 
-                if(!$user->status) {
+                if(!$user->is_active) {
                     return response()->json([
                         'status' => false,
                         'is_active' => true,
@@ -63,6 +63,8 @@ class AuthController extends Controller
                         'redirect' => route('login.index'),
                     ]);
                 }
+
+                // dd($user);
                 Auth::guard('admin')->login($user);
 
                 return response()->json([
@@ -72,7 +74,7 @@ class AuthController extends Controller
                 ]);
             }
             elseif(strtolower($user->role) === 'member') {
-                if(!$user->status) {
+                if(!$user->is_active) {
                     return response()->json([
                         'status' => false,
                         'is_active' => true,
@@ -84,7 +86,7 @@ class AuthController extends Controller
 
                 return response()->json([
                     'status' => true,
-                    'message' => 'welcome to the dashboard',
+                    'message' => 'welcome to the member dashboard',
                     'redirect' => route('member.dashboard'),
                 ]);
             }
@@ -93,7 +95,7 @@ class AuthController extends Controller
 
                 return response()->json([
                     'status' => true,
-                    'message' => 'welcome to the dashboard',
+                    'message' => 'welcome to the super admin dashboard',
                     'redirect' => route('s_admin.dashboard'),
                 ]);
             }
@@ -111,5 +113,23 @@ class AuthController extends Controller
                 'message' => 'something went wrong',
             ], 500);
         }
+    }
+
+    public function sadmin_logout() {
+        Auth::guard('s_admin')->logout();
+
+        return redirect()->route('login.index');
+    }
+
+    public function admin_logout() {
+        Auth::guard('admin')->logout();
+
+        return redirect()->route('login.index');
+    }
+
+    public function member_logout() {
+        Auth::guard('member')->logout();
+
+        return redirect()->route('login.index');
     }
 }
