@@ -21,7 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role'
+        'role',
+        'admin_id',
+        'company_id'
     ];
 
     /**
@@ -46,4 +48,25 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function shortUrlsByAdmin() {
+        return $this->hasMany(ShortUrl::class, 'admin_id', 'id')->whereNull('member_id');
+    }
+
+    public function shortUrlsByMember() {
+        return $this->hasMany(ShortUrl::class, 'member_id', 'id');
+    }
+
+    public function company() {
+        return $this->belongsTo(User::class, 'company_id', 'id');
+    }
+
+    public function shortUrlByCompany() {
+        return $this->hasMany(ShortUrl::class, 'company_id');
+    }
+
+    public function usersByCompany() {
+        return $this->hasMany(User::class, 'company_id');
+    }
+
 }

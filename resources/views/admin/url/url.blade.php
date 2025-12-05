@@ -1,12 +1,12 @@
-@extends('member.layouts.app_member')
+@extends('admin.layouts.app_admin')
 
-@push('member.title', 'Generate Url')
+@push('admin.title', 'Generate Url')
 
-@push('member.customCss')
+@push('admin.customCss')
 
 @endpush
 
-@section('member.content')
+@section('admin.content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid my-2">
@@ -83,13 +83,13 @@
                                             <button type="submit" class="btn btn-primary">
                                                 <i class="fas fa-search"></i> Search
                                             </button>
-                                            <a href="{{ route('member-url.create') }}" class="btn btn-secondary ml-2">
+                                            <a href="{{ route('admin-url.create') }}" class="btn btn-secondary ml-2">
                                                 <i class="fas fa-sync-alt"></i> Reset
                                             </a>
                                         </div>
                                     </div>
                                 </form>
-                                <a href="{{ route('member-url.exportUrlReport', request()->all()) }}" class="btn btn-success ml-2 mb-3">Download</a>
+                                <a href="{{ route('admin-url.exportUrlReport', request()->all()) }}" class="btn btn-success ml-2 mb-3">Download</a>
 
                             </div>
                             {{--
@@ -113,6 +113,8 @@
                                         <th>Short Url</th>
                                         <th>Long Url</th>
                                         <th>Hits</th>
+                                        <th>Created By</th>
+                                        {{-- <th>Status</th> --}}
                                         <th>Created On</th>
                                     </tr>
 
@@ -132,6 +134,24 @@
                                                 </td>
                                                 <td>{{ $url->long_url }}</td>
                                                 <td>{{ $url->hits }}</td>
+                                                @if ($url->member)
+                                                    <td>{{ $url->member->name .' ('.$url->member->role . ')' ?? 'N/A' }}</td>
+                                                @else
+                                                    <td>{{ $url->admin->name .' ('.$url->admin->role .')' ?? 'N/A' }}</td>
+                                                @endif
+
+
+
+
+                                                {{-- <td>
+                                                    @if($url->status)
+                                                        <button class="btn btn-success btn-sm toggle-status"
+                                                            data-id="{{ Crypt::encrypt($url->id) }}">Active</button>
+                                                    @else
+                                                        <button class="btn btn-danger btn-sm toggle-status"
+                                                            data-id="{{ Crypt::encrypt($url->id) }}">Block</button>
+                                                    @endif
+                                                </td> --}}
                                                 <td>
                                                     {{ \Carbon\Carbon::parse($url->created_at)->setTimezone('Asia/Kolkata')->format('d-m-Y') }}
                                                 </td>
@@ -145,7 +165,7 @@
                                         @endforeach
                                     @else
                                         <tr>
-                                            <td colspan="6" class="text-center">No Short urls found</td>
+                                            <td colspan="7" class="text-center">No Short urls found</td>
                                         </tr>
                                     @endif
                                 </table>
@@ -160,7 +180,7 @@
         <!-- /.content -->
 @endsection
 
-@push('member.customJs')
+@push('admin.customJs')
     <script>
         function copyShortUrl(url) {
             navigator.clipboard.writeText(url).then(function() {
@@ -180,7 +200,7 @@
                 let formData = new FormData(this);
 
                 $.ajax({
-                    url: "{{ route('member-url.store') }}",
+                    url: "{{ route('admin-url.store') }}",
                     type: 'POST',
                     data: formData,
                     processData: false,
@@ -234,7 +254,7 @@
             let button = $(this);
 
             $.ajax({
-                url: "/member/short-url/status/" + urlId,
+                url: "/admin/short-url/status/" + urlId,
                 type: 'put',
                 success: function (response) {
                     if (response.status == true) {
@@ -243,7 +263,7 @@
 
                     }
                     else {
-                        window.location.href = "{{ route('member-url.create') }}";
+                        window.location.href = "{{ route('admin-url.create') }}";
                     }
                 },
                 error: function (xhr) {
@@ -254,3 +274,4 @@
         });
     </script>
 @endpush
+

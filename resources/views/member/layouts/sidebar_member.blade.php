@@ -43,6 +43,15 @@
                         </p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('member-url.create') }}" class="nav-link{{ request()->routeIs('member-url.create') ? ' active' : '' }}">
+                        <i class="nav-icon fas fa-link"></i>
+                        <p>
+                            Short Url
+                            {{-- <span class="right badge badge-danger">New</span> --}}
+                        </p>
+                    </a>
+                </li>
 
                 {{-- <li class="nav-item">
                     <a href="{{ route('user-product.index') }}" class="nav-link{{ Request::is('user/product*') ? ' active' : '' }}">

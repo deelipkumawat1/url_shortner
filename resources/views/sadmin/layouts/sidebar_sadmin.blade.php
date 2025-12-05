@@ -44,45 +44,26 @@
                     </a>
                 </li>
 
-                {{-- <li class="nav-item">
-                    <a href="{{ route('user-product.index') }}" class="nav-link{{ Request::is('user/product*') ? ' active' : '' }}">
-                        <i class="nav-icon fas fa-box"></i>
+                <li class="nav-item">
+                    <a href="{{ route('shortUrls.index') }}" class="nav-link{{ request()->routeIs('shortUrls.index') ? ' active' : '' }}">
+                        <i class="nav-icon fas fa-link"></i>
                         <p>
-                            Product
+                            Short Urls
+                            {{-- <span class="right badge badge-danger">New</span> --}}
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('sadmin-admin.index') }}" class="nav-link{{ Request::is(['sadmin/admin*']) ? ' active' : '' }}">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>
+                            Admins/Company
+                            {{-- <span class="right badge badge-danger">New</span> --}}
                         </p>
                     </a>
                 </li>
 
-                <li class="nav-item{{ Request::is(['user/group-master*', 'user/account-master*', 'user/pos*']) ? ' menu-is-opening menu-open' : '' }}">
-                    <a href="javascript:void(0);" class="nav-link{{ Request::is(['user/group-master*', 'user/account-master*', 'user/pos*']) ? ' active' : '' }}">
-                        <i class="nav-icon fas fa-chart-line"></i>
-                        <p>
-                            Sales Management
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('user-group-master.index') }}" class="nav-link {{ request()->routeIs('user-group-master.index') || Request::is(['user/group-master/*']) ? ' active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Group Master</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('user-account-master.index') }}" class="nav-link {{ request()->routeIs('user-account-master.index') || Request::is(['user/account-master/*']) ? ' active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Account Master</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('user-pos.index') }}" class="nav-link {{ request()->routeIs('user-pos.index') || Request::is(['user/pos/*']) ? ' active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Pos window</p>
-                            </a>
-                        </li>
 
-                    </ul>
-                </li> --}}
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

@@ -14,6 +14,7 @@ class ShortUrl extends Model
         'status',
         'member_id',
         'admin_id',
+        'company_id',
     ];
 
     public function member() {

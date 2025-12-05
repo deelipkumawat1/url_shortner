@@ -20,10 +20,11 @@ Route::middleware('member.auth')->group(function() {
             Route::get('/add', [ShortUrlController::class, 'create'])->name('create');
             Route::post('/store', [ShortUrlController::class, 'store'])->name('store');
             Route::put('/status/{id}', [ShortUrlController::class, 'status'])->name('status');
+            Route::get('/download', [ShortUrlController::class, 'exportUrlReport'])->name('exportUrlReport');
         });
     });
 });
+Route::get('s/{short_url}', [ShortUrlController::class, 'redirect'])->name('member-url.redirect');
 
-Route::get('/{short_url}', [ShortUrlController::class, 'redirect'])->name('member-url.redirect');
 
 

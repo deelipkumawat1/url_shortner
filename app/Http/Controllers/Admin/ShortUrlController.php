@@ -1,57 +1,57 @@
 <?php
 
-namespace App\Http\Controllers\Member;
+namespace App\Http\Controllers\Admin;
 
-use App\Exports\MemberShortUrlExport;
 use Exception;
 use App\Models\ShortUrl;
 use Illuminate\Http\Request;
+use App\Exports\AdminShortUrlExport;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Maatwebsite\Excel\Facades\Excel;
 
 class ShortUrlController extends Controller
 {
-    protected $member;
+    protected $admin;
     protected $member_id;
     protected $admin_id;
     protected $company_id;
 
     public function __construct() {
-        $this->member = Auth::guard('member')->user();
+        $this->admin = Auth::guard('admin')->user();
 
-        if($this->member) {
-            $this->member_id = $this->member->id;
-            $this->admin_id = $this->member->admin_id;
-            $this->company_id = $this->member->company_id;
+        if($this->admin) {
+            $this->admin_id = $this->admin->id;
+            $this->company_id = $this->admin->company_id;
         }
         else {
-            $this->member_id = null;
+            // $this->member_id = null;
             $this->admin_id = null;
         }
 
     }
-    public function index() {
-        return view('member.url.url_list');
-    }
 
     public function create(Request $request) {
-
         $query = ShortUrl::query();
-        $query->where(['is_delete' => false, 'admin_id' => $this->admin_id, 'member_id' => $this->member_id])->orderBy('id', 'DESC')->paginate(10);
+        $query->where(['is_delete' => false, 'company_id' => $this->company_id])->with('member')->orderBy('id', 'DESC');
 
         $dateFilter = $request->input('date_filter');
         $query = applyDateFilter($query, $dateFilter, null, null, 'created_at');
 
+
+
         $urls = $query->paginate(10)->appends($request->only('date_filter'));
+
         $data = [
             'urls' => $urls
         ];
-        return view('member.url.url')->with($data);
+
+        // dd($data);
+        return view('admin.url.url')->with($data);
     }
 
     public function store(Request $request) {
@@ -72,15 +72,16 @@ class ShortUrlController extends Controller
             $shortUrl = ShortUrl::create([
                 's_url_code' => $shortCode,
                 'long_url' => $request->long_url,
-                'member_id' => $this->member_id,
+                // 'member_id' => $this->member_id,
                 'admin_id' => $this->admin_id,
                 'company_id' => $this->company_id,
+
             ]);
 
             return response()->json([
                 'status' => true,
                 'message' => 'Short url added successfully!',
-                'redirect' => route('member-url.create'),
+                'redirect' => route('admin-url.create'),
             ]);
         } catch (Exception $e) {
             return response()->json([
@@ -109,7 +110,7 @@ class ShortUrlController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Short Url not found!',
-                'redirect' => route('member-url.create'),
+                'redirect' => route('admin-url.create'),
             ]);
         }
         catch (ModelNotFoundException $e) {
@@ -117,7 +118,7 @@ class ShortUrlController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Short Url not found!',
-                'redirect' => route('member-url.create'),
+                'redirect' => route('admin-url.create'),
             ]);
         }
         catch (DecryptException $e) {
@@ -125,13 +126,13 @@ class ShortUrlController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Short Url not found!',
-                'redirect' => route('member-url.create'),
+                'redirect' => route('admin-url.create'),
             ]);
         }
     }
 
     public function exportUrlReport(Request $request) {
-        return Excel::download(new MemberShortUrlExport($request), 'member_short_urls.xlsx');
+        return Excel::download(new AdminShortUrlExport($request), 'admin_short_urls.xlsx');
     }
 
     public function redirect($shortUrl) {
@@ -145,7 +146,5 @@ class ShortUrlController extends Controller
 
         return redirect()->away($recored->long_url);
     }
-
-
 
 }
