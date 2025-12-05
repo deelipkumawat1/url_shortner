@@ -12,7 +12,7 @@ Follow the steps below to set up this project locally.
 
 ## 1️⃣ Clone the Repository  
 ```bash
-git clone <your-github-repo-url>
+git clone https://github.com/deelipkumawat1/url_shortner.git
 
 cd Url_Shortner
 
