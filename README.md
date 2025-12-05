@@ -85,5 +85,9 @@ Replace username & password with real values from Mailtrap dashboard.
 php artisan serve
 
 
+Ai tools:- 
+ChatGPT for debuging
+
+
 Test Project 
 
